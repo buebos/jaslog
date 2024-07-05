@@ -1,4 +1,4 @@
-import Logger from "./src/Logger";
+import Jaslogger from "./src/core/Jaslogger";
 
-export * from "./src/Level";
-export default Logger;
+export * from "./src/core/LoggerLevel";
+export default Jaslogger;

@@ -1,14 +1,10 @@
-import Logger, { LoggerLevel } from "jaslogger";
+import { chained as logger } from "../../../src/template/logger";
 
-const levels: LoggerLevel<"information">["map"] = {
-    information: { color: { title: [255, 0, 0] } },
-};
-
-const logger = new Logger<"information">({
-    levels: {
-        initial: levels.information,
-        info: levels,
-    },
-});
-
-logger.chain.set("information").title("Hello.").desc();
+logger
+    .set("info")
+    .line()
+    .title("Hello.")
+    .line()
+    .desc()
+    .line("This is a message from the example/package/api-basic-test module")
+    .line("testing jaslogger npm package.");

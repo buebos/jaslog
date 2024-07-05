@@ -7,8 +7,9 @@
         "example": "example"
     },
     "scripts": {
-        "build": "tsc --project tsconfig.build.json",
         "dev": "ts-node __tests__/index.test.ts",
+        "test": "ts-node __tests__/index.test.ts",
+        "build": "tsc --project tsconfig.build.json",
         "prepack": "npm run build"
     },
     "keywords": [
