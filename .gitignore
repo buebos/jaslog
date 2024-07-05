@@ -1,0 +1,13 @@
+# Dependencies should be downloaded from package.json config once the repo is cloned or pulled
+node_modules
+
+# Distribution should only be uploaded to npm
+dist
+
+# Projects generated from testing
+generated
+
+# Ignore all keys and variables private to local machine
+# (mainly in case API keys are added). Just in case I add
+# some API key or something to download the tools lol.
+.env

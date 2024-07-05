@@ -1,0 +1,22 @@
+{
+  "name": "jaslogger",
+  "version": "0.0.1",
+  "description": "Example of jaslogger.",
+  "main": "build/index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {},
+  "keywords": [
+    "logger"
+  ],
+  "author": "Gael Herrera",
+  "license": "ISC",
+  "dependencies": {
+    "jaslogger": "latest"
+  },
+  "devDependencies": {
+    "jaslogger": "..",
+    "@types/node": "^20.14.9"
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "jaslogger",
+    "version": "0.0.1",
+    "description": "A basic logger for my JS projects.",
+    "main": "build/index.js",
+    "directories": {
+        "example": "example"
+    },
+    "scripts": {
+        "build": "tsc --project tsconfig.build.json",
+        "dev": "ts-node __tests__/index.test.ts"
+    },
+    "keywords": [
+        "logger"
+    ],
+    "author": "Gael Herrera",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^20.14.9",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.3"
+    }
+}
