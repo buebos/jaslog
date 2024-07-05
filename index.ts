@@ -1,4 +1,8 @@
-import Jaslogger from "./src/core/Jaslogger";
-
 export * from "./src/core/LoggerLevel";
-export default Jaslogger;
+export * from "./src/provider/Logger/Chained";
+
+import { chained } from "./src/template/logger";
+
+export const template = {
+    chained,
+};

@@ -1,4 +1,6 @@
-import { chained as logger } from "../../../src/template/logger";
+import { template } from "jaslogger";
+
+const logger = template.chained;
 
 logger
     .set("info")
