@@ -1,0 +1,13 @@
+# Only useful for development
+__tests__
+
+# Used to showcase on repo only.
+example
+
+# For dev purpusoses only
+.git
+.gitignore
+
+.vscode
+
+.prettierrc

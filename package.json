@@ -1,6 +1,6 @@
 {
     "name": "jaslogger",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A basic logger for my JS projects.",
     "main": "build/index.js",
     "directories": {
@@ -8,7 +8,8 @@
     },
     "scripts": {
         "build": "tsc --project tsconfig.build.json",
-        "dev": "ts-node __tests__/index.test.ts"
+        "dev": "ts-node __tests__/index.test.ts",
+        "prepack": "npm run build"
     },
     "keywords": [
         "logger"
