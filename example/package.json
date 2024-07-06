@@ -1,7 +1,7 @@
 {
-  "name": "jaslogger",
+  "name": "jaslog",
   "version": "0.0.1",
-  "description": "Example of jaslogger.",
+  "description": "Example of jaslog.",
   "main": "build/index.js",
   "directories": {
     "example": "example"
@@ -13,10 +13,10 @@
   "author": "Gael Herrera",
   "license": "ISC",
   "dependencies": {
-    "jaslogger": "latest"
+    "jaslog": "latest"
   },
   "devDependencies": {
-    "jaslogger": "..",
+    "jaslog": "..",
     "@types/node": "^20.14.9"
   }
 }

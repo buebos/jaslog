@@ -1,7 +1,7 @@
 {
-    "name": "jaslogger",
-    "version": "0.0.2",
-    "description": "A basic logger for my JS projects.",
+    "name": "jaslog",
+    "version": "0.0.1",
+    "description": "Basic utilities on logging and formatting that I'm developing for my personal use.",
     "main": "build/index.js",
     "directories": {
         "example": "example"

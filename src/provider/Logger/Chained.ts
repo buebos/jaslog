@@ -1,11 +1,14 @@
-import LoggerLevel, { LevelKeyDefaults } from "../../core/LoggerLevel";
+import LoggerLevel, {
+    LevelSection,
+    LevelDefaults,
+} from "../../core/LoggerLevel";
 import { Target } from "../../core/Target";
 import Terminal from "../Target/Terminal";
 
 type ChainExecuteStrategy = "accumulate" | "immediate";
 type ChainedLevel<Levels extends string> = {
     map: LoggerLevel<Levels>;
-    current: LoggerLevel<Levels>[Levels];
+    current: Levels;
 };
 
 type Config<Levels extends string> = {
@@ -14,19 +17,18 @@ type Config<Levels extends string> = {
     target?: Target;
 };
 
-const levelDefault: LoggerLevel<LevelKeyDefaults> = {
+const levelDefault: LoggerLevel<LevelDefaults> = {
     info: {
-        title: {
-            format: { color: [0, 255, 0], bold: 1 },
-        },
+        global: { prefix: { format: { color: [0, 255, 0] } } },
+        title: { format: { color: [255, 255, 255], bold: 1 } },
         desc: { format: { color: [200, 200, 200] } },
     },
     warn: {},
     error: {},
     debug: {},
 };
-const chainedLevelDefault: ChainedLevel<LevelKeyDefaults> = {
-    current: levelDefault.info,
+const chainedLevelDefault: ChainedLevel<LevelDefaults> = {
+    current: "info",
     map: levelDefault,
 };
 
@@ -34,34 +36,87 @@ const chainedLevelDefault: ChainedLevel<LevelKeyDefaults> = {
  * Logger with methods prioritizing chaining strategy for
  * building messages.
  */
-class Chained<Levels extends string = LevelKeyDefaults> {
+export class Chained<Levels extends string = LevelDefaults> {
     public execute: ChainExecuteStrategy = "immediate";
 
     private target: Target;
     private level: ChainedLevel<Levels>;
+    public isPrefixEnabled: boolean = true;
 
     constructor(config?: Config<Levels>) {
         this.execute = config?.executeStrategy ?? this.execute;
 
         this.target = config?.target ?? new Terminal();
         this.level =
-            config?.level ?? (chainedLevelDefault as ChainedLevel<Levels>);
+            config?.level ??
+            (chainedLevelDefault as unknown as ChainedLevel<Levels>);
     }
 
-    set(key: Levels): typeof this {
-        this.level.current = this.level.map[key];
-
+    set(key: Levels): Chained<Levels> {
+        this.level.current = key;
+        return this;
+    }
+    prefix(): Chained<Levels> {
+        this.isPrefixEnabled = true;
+        return this;
+    }
+    noPrefix(): Chained<Levels> {
+        this.isPrefixEnabled = false;
         return this;
     }
 
-    title(message: string): typeof this {
+    private getLevelInfo() {
+        return this.level.map[this.level.current];
+    }
+
+    private getPrefix(section: LevelSection): string {
+        if (!this.isPrefixEnabled) {
+            return "";
+        }
+
+        const level = this.getLevelInfo();
+        const prefixParts = ["[", "", "]: "];
+
+        if (level[section]?.prefix?.label) {
+            prefixParts[1] = level[section].prefix.label;
+        } else if (level.global?.prefix?.label) {
+            prefixParts[1] = level.global.prefix.label;
+        } else {
+            prefixParts[1] = this.level.current.toLocaleUpperCase();
+        }
+
+        return prefixParts.join("");
+    }
+
+    private write(section: LevelSection, message: string): typeof this {
+        const level = this.getLevelInfo();
+
         if (this.execute != "immediate") {
             throw new Error("Unimplemented");
         }
 
-        if (this.level.current.title?.format) {
-            this.target.pushFormat(this.level.current.title.format);
+        if (level[section]?.prefix?.format) {
+            this.target.pushFormat(level[section].prefix.format);
+        } else if (level.global?.prefix?.format) {
+            this.target.pushFormat(level.global?.prefix?.format);
+        } else if (level[section]?.format) {
+            this.target.pushFormat(level[section].format);
+        } else if (level.global?.format) {
+            this.target.pushFormat(level.global.format);
         }
+
+        this.target.write(this.getPrefix(section));
+
+        if (level[section]?.prefix?.format || level.global?.prefix?.format) {
+            this.target.clearFormat();
+
+            if (level[section]?.format) {
+                this.target.pushFormat(level[section].format);
+            } else if (level.global?.format) {
+                this.target.pushFormat(level.global.format);
+            }
+        }
+
         this.target.write(message);
         this.target.clearFormat();
         this.target.newLine();
@@ -69,32 +124,22 @@ class Chained<Levels extends string = LevelKeyDefaults> {
         return this;
     }
 
-    desc(message?: string): typeof this {
-        return this.line(message);
+    title(message: string): Chained<Levels> {
+        return this.write("title", message);
     }
 
-    line(message?: string): typeof this {
-        if (this.execute != "immediate") {
-            throw new Error("Unimplemented");
-        }
-
+    desc(message?: string): Chained<Levels> {
         if (!message) {
             this.target.newLine();
             return this;
         }
 
-        if (this.level.current.desc?.format) {
-            this.target.pushFormat(this.level.current.desc?.format);
-        }
+        return this.write("desc", message);
+    }
 
-        this.target.write(message);
-        this.target.clearFormat();
-        this.target.newLine();
-
-        return this;
+    line(message?: string): Chained<Levels> {
+        return this.desc(message);
     }
 
     out() {}
 }
-
-export default Chained;
