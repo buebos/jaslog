@@ -1,16 +1,17 @@
-import { template, Chained } from "../index";
+import { Chained, template, terminal } from "../index";
 
 const logger = {
     chained: {
-        template: template.chained,
+        template: template.chained.terminal,
         configured: new Chained<"general" | "special">({
+            targets: [terminal],
             level: {
                 current: "general",
                 map: {
                     general: {
                         global: {
                             format: {
-                                color: [255, 255, 255]
+                                color: [255, 255, 255],
                             },
                             prefix: {
                                 label: "General",
@@ -39,24 +40,60 @@ const logger = {
 };
 
 logger.chained.template
-    .set("info")
-    .line()
+    .level("info")
+
     .title("Hello.")
-    .desc()
-    .line("This is a message from the example/package/api-basic-test module")
-    .line("testing jaslog npm package.");
+    .line()
+    .desc("This is a message from the example/package/api-basic-test module")
+    .desc("testing jaslog npm package.")
+
+    .prefixOff()
+    .line()
+    .desc(
+        "---------------------------------------------------------------------------\n"
+    )
+    .prefixOn();
+
+logger.chained.template
+    .prefixOff()
+    .level("info")
+
+    .title("Hello.")
+    .line()
+    .desc("This is a message from the example/package/api-basic-test module")
+    .desc("testing jaslog npm package.")
+
+    .line()
+    .desc(
+        "---------------------------------------------------------------------------\n"
+    );
 
 logger.chained.configured
-    .set("general")
-    .line()
+    .level("general")
+
     .title("Hello.")
-    .desc()
-    .line("This is a message from the example/package/api-basic-test module")
-    .line("testing jaslog npm package.");
+    .line()
+    .desc("This is a message from the example/package/api-basic-test module")
+    .desc("testing jaslog npm package.")
+
+    .prefixOff()
+    .line()
+    .desc(
+        "---------------------------------------------------------------------------\n"
+    )
+    .prefixOn();
+
 logger.chained.configured
-    .set("special")
-    .line()
+    .level("special")
+
     .title("Hello.")
-    .desc()
-    .line("This is a message from the example/package/api-basic-test module")
-    .line("testing jaslog npm package.");
+    .line()
+    .desc("This is a message from the example/package/api-basic-test module")
+    .desc("testing jaslog npm package.")
+
+    .prefixOff()
+    .line()
+    .desc(
+        "---------------------------------------------------------------------------\n"
+    )
+    .prefixOn();

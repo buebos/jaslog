@@ -1,14 +1,11 @@
-import { template, Chained } from "jaslog";
+import { template } from "jaslog";
 
-const logger = {
-    template: { chained: template.chained },
-};
+const logger = template.chained.terminal;
 
-logger.template.chained
-    .set("info")
+logger
+    .level("info")
     .line()
     .title("Hello.")
     .line()
-    .desc()
-    .line("This is a message from the example/package/api-basic-test module")
-    .line("testing jaslog npm package.");
+    .desc("This is a message from the example/package/api-basic-test module")
+    .desc("testing jaslog npm package.");

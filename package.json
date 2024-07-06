@@ -2,7 +2,7 @@
     "name": "jaslog",
     "version": "0.0.1",
     "description": "Basic utilities on logging and formatting that I'm developing for my personal use.",
-    "main": "build/index.js",
+    "main": "dist/index.js",
     "directories": {
         "example": "example"
     },

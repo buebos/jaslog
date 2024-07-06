@@ -3,6 +3,8 @@
         "strict": true,
         "declaration": true,
         "outDir": "dist",
-        "moduleResolution": "Node"
-    }
+        "moduleResolution": "Node",
+        "rootDir": "."
+    },
+    "files": ["index.ts"]
 }
