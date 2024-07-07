@@ -58,13 +58,13 @@ logger.chain
     .line(managers.map((m) => "- " + m.label).join("\n"));
 
 /***********************************************
- * Object-oriented logging - Sum of strings
+ * Blueprint logging - Sum of strings
  ***********************************************/
 
 /**
  * Uses an object to define the error message, with title and desc properties
  */
-logger.template.error({
+logger.blueprint.error({
     title: "Dependency manager missing.",
     desc:
         "Your system does not have any of the supported dependency managers\n" +
@@ -76,10 +76,10 @@ logger.template.error({
 });
 
 /***********************************************
- * Object-oriented logging - Backtick strings
+ * Blueprint logging - Backtick strings
  ***********************************************/
 
-logger.template.error({
+logger.blueprint.error({
     title: "Dependency manager missing.",
     desc: `Your system does not have any of the supported dependency managers
     installed. The create-next-kit requires at least one of the following
@@ -89,14 +89,14 @@ ${managers.map((m) => "- " + m.label).join("\n")}`,
 });
 
 /***********************************************
- * Object-oriented logging - Array join
+ * Blueprint logging - Array join
  ***********************************************/
 
 /**
  * Uses an object to define the error message, with title and desc properties
  * The desc property is a string built by joining an array of strings
  */
-logger.template.error({
+logger.blueprint.error({
     title: "Dependency manager missing.",
     desc: [
         "Your system does not have any of the supported dependency managers",
