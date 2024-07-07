@@ -1,10 +1,10 @@
-import { Chained, template, terminal } from "../index";
+import { Chained, template, target } from "../index";
 
 const logger = {
     chained: {
         template: template.chained.terminal,
         configured: new Chained<"general" | "special">({
-            targets: [terminal],
+            targets: [target.terminal],
             level: {
                 current: "general",
                 map: {
