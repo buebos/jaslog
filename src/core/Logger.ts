@@ -1,18 +1,7 @@
 import Format from "./Format";
 import { Target } from "./Target";
 
-export type ConfigLevel<Levels extends string> = {
-    map: LoggerLevel<Levels>;
-    current: Levels;
-};
-
-export type LoggerConfig<Levels extends string> = {
-    targets: Target[];
-    level: ConfigLevel<Levels>;
-};
-
 export type LevelSection = "global" | "title" | "desc";
-
 export type LevelSectionInfo = {
     format?: Format;
     prefix?: {
@@ -20,20 +9,33 @@ export type LevelSectionInfo = {
         format?: Format;
     };
 };
-
 export type LevelInfo = { label?: string } & {
     [key in LevelSection]?: LevelSectionInfo;
 };
 
 export type LoggerLevel<Levels extends string> = Record<Levels, LevelInfo>;
 
-export type LevelDefaults = "info" | "warn" | "error" | "debug";
+export type ConfigLevel<
+    Levels extends string,
+    LevelCurrent extends string = Levels
+> = {
+    current: LevelCurrent;
+    map: LoggerLevel<Levels>;
+};
+
+export type LoggerConfig<
+    Levels extends string,
+    LevelCurrent extends Levels = Levels
+> = {
+    targets: Target[];
+    level: ConfigLevel<Levels, LevelCurrent>;
+};
 
 /**
  * Logger with methods prioritizing chaining strategy for
  * building messages.
  */
-class Logger<Levels extends string = LevelDefaults> {
+class Logger<Levels extends string> {
     private targets: Target[];
     private level: ConfigLevel<Levels>;
     public isPrefixEnabled: boolean = true;
