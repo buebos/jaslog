@@ -1,5 +1,10 @@
-import type { LoggerConfig } from "../../core/Logger";
+import type { LevelSection, LoggerConfig } from "../../core/Logger";
 import Logger from "../../core/Logger";
+
+type ChainedAc = {
+    type: LevelSection;
+    data: string;
+};
 
 type ChainedExecuteStrat = "accumulate" | "immediate";
 
@@ -15,6 +20,7 @@ export class Chained<Levels extends string> {
     public execute: ChainedExecuteStrat = "immediate";
 
     private logger: Logger<Levels>;
+    private ac: ChainedAc[] = [];
 
     constructor(config: ChainedConfig<Levels>) {
         this.execute = config?.executeStrategy || this.execute;
@@ -27,6 +33,8 @@ export class Chained<Levels extends string> {
 
     level(key: Levels) {
         this.logger.setLevel(key);
+        this.ac = [];
+
         return this;
     }
     prefixOn() {
@@ -39,12 +47,25 @@ export class Chained<Levels extends string> {
     }
 
     title(message: string): Chained<Levels> {
+        if (this.execute == "accumulate") {
+            this.ac.push({ type: "title", data: message });
+
+            return this;
+        }
+
         this.logger.line(message, "title");
         return this;
     }
 
     desc(message?: string): Chained<Levels> {
         if (!message) {
+            this.logger.line();
+            return this;
+        }
+
+        if (this.execute == "accumulate") {
+            this.ac.push({ type: "desc", data: message });
+
             return this;
         }
 
@@ -53,15 +74,26 @@ export class Chained<Levels extends string> {
         return this;
     }
 
-    line(message?: string): Chained<Levels> {
-        if (!message) {
-            this.logger.line();
+    line(): Chained<Levels> {
+        this.logger.line();
 
-            return this;
-        }
-
-        return this.desc(message);
+        return this;
     }
 
-    out() {}
+    out() {
+        if (this.execute == "immediate") {
+            return;
+        }
+
+        for (const message of this.ac) {
+            if (!message) {
+                this.logger.line();
+                continue;
+            }
+
+            this.logger.line(message.data, message.type);
+        }
+
+        this.ac = [];
+    }
 }
