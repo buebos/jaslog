@@ -104,10 +104,11 @@ class Logger<Levels extends string = LevelDefaults> {
     }
 
     line(message?: string, section: LevelSection = "desc") {
-        if (!message) {
+        if (typeof message != "string") {
             for (const target of this.targets) {
                 target.newLine();
             }
+
             return;
         }
 
