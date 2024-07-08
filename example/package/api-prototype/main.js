@@ -1,22 +1,4 @@
 /***********************************************
- * Variable arguments
- ***********************************************/
-
-/**
- * Logs the error message using multiple string arguments
- */
-logger.error(
-    "Dependency manager missing.",
-    "",
-    "Your system does not have any of the supported dependency managers",
-    "installed. The create-next-kit requires at least one of the",
-    "following dependency managers to function properly. Please install",
-    "one of the following based on your project's dependency",
-    "requirements:",
-    ...managers.map((m) => "- " + m.label)
-);
-
-/***********************************************
  * Chained logging - Execute all
  ***********************************************/
 
@@ -33,9 +15,11 @@ logger.chain
     .acln("installed. The create-next-kit requires at least one of the")
     .acln("following dependency managers to function properly. Please install")
     .acln("one of the following based on your project's dependency")
-    .acln("requirements:")
-    .acln(managers.map((m) => "- " + m.label).join("\n"))
-    .out();
+    .acln("requirements:");
+managers.forEach((m) => {
+    logger.chain.acln("- " + m.label);
+});
+logger.chain.out();
 
 /***********************************************
  * Chained logging - Execute each
@@ -54,8 +38,10 @@ logger.chain
     .line("installed. The create-next-kit requires at least one of the")
     .line("following dependency managers to function properly. Please install")
     .line("one of the following based on your project's dependency")
-    .line("requirements:")
-    .line(managers.map((m) => "- " + m.label).join("\n"));
+    .line("requirements:");
+managers.forEach((m) => {
+    logger.chain.line("- " + m.label);
+});
 
 /***********************************************
  * Blueprint logging - Sum of strings
@@ -67,11 +53,11 @@ logger.chain
 logger.blueprint.error({
     title: "Dependency manager missing.",
     desc:
-        "Your system does not have any of the supported dependency managers\n" +
-        "installed. The create-next-kit requires at least one of the\n" +
-        "following dependency managers to function properly. Please install\n" +
-        "one of the following based on your project's dependency\n" +
-        "requirements:\n" +
+        "Your system does not have any of the supported dependency managers " +
+        "installed. The create-next-kit requires at least one of the " +
+        "following dependency managers to function properly. Please install " +
+        "one of the following based on your project's dependency " +
+        "requirements: " +
         managers.map((m) => "\n- " + m.label).join(""),
 });
 
@@ -99,11 +85,11 @@ ${managers.map((m) => "- " + m.label).join("\n")}`,
 logger.blueprint.error({
     title: "Dependency manager missing.",
     desc: [
-        "Your system does not have any of the supported dependency managers",
-        "installed. The create-next-kit requires at least one of the",
-        "following dependency managers to function properly. Please install",
-        "one of the following based on your project's dependency",
-        "requirements:",
+        "Your system does not have any of the supported dependency managers " +
+            "installed. The create-next-kit requires at least one of the " +
+            "following dependency managers to function properly. Please install " +
+            "one of the following based on your project's dependency " +
+            "requirements:",
         ...managers.map((m) => "- " + m.label),
     ].join("\n"),
 });
