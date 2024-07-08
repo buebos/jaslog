@@ -5,11 +5,9 @@ enum FormatUnderline {
     STRAIGHT_LINE,
 }
 
-type Format = {
+export type Format = {
     color?: RGB;
     /** Its a number to supports levels of boldness */
     bold?: number;
     underline?: FormatUnderline;
 };
-
-export default Format;

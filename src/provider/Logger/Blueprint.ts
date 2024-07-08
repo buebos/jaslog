@@ -1,5 +1,5 @@
 import Logger, { LoggerLevel } from "../../core/Logger";
-import { Target } from "../../core/Target";
+import Target from "../../core/Target";
 
 type Config<Levels extends string> = {
     level: LoggerLevel<Levels>;

@@ -3,6 +3,11 @@
     "version": "0.0.1",
     "description": "Basic utilities on logging and formatting that I'm developing for my personal use.",
     "main": "dist/index.js",
+    "exports": {
+        ".": "./dist/index.js",
+        "./Format": "./dist/src/core/Format.js",
+        "./Target": "./dist/src/core/Target.js"
+    },
     "directories": {
         "example": "example"
     },

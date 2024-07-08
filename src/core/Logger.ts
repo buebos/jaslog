@@ -1,5 +1,5 @@
-import Format from "./Format";
-import { Target } from "./Target";
+import { Format } from "./Format";
+import Target from "./Target";
 
 export type LevelSection = "global" | "title" | "desc";
 export type LevelSectionInfo = {
