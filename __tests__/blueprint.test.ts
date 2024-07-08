@@ -1,8 +1,10 @@
-import { Blueprint, target, base } from "../index";
+import { Blueprint } from "../src/provider/Logger/Blueprint";
+import { base } from "../src/template/base";
+import { terminal } from "../src/template/target";
 
 const logger = Blueprint.create({
     level: base,
-    targets: [target.terminal],
+    targets: [terminal],
 });
 
 logger.info({
