@@ -7,8 +7,8 @@ type Config<Levels extends string> = {
 };
 
 type Message = {
-    titles?: string[];
-    lines?: string[];
+    title?: string;
+    desc?: string;
 };
 
 type BlueprintLevelWrite = (message: Message) => void;
@@ -47,17 +47,18 @@ export class Blueprint<Levels extends string> {
         ) as unknown as BlueprintWithLevelMethods<Levels>;
     }
 
-    write(message: Message) {
-        if (message.titles) {
-            for (const title of message.titles) {
-                this.logger.line(title, "title");
-            }
+    private write(message: Message) {
+        if (message.title) {
+            this.logger.line(message.title, "title");
+            this.logger.line();
         }
 
-        if (message.lines) {
-            for (const line of message.lines) {
-                this.logger.line(line, "desc");
-            }
+        if (message.desc) {
+            this.logger.line(message.desc, "desc");
         }
+    }
+
+    line() {
+        this.logger.line();
     }
 }
