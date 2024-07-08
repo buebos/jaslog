@@ -1,5 +1,5 @@
-import Format from "../../core/Format";
-import { Target } from "../../core/Target";
+import { Format } from "../../core/Format";
+import Target from "../../core/Target";
 import {
     ANSI_BOLD,
     ANSI_COLOR_POSTFIX,
@@ -7,28 +7,52 @@ import {
     ANSI_RESET,
 } from "../../util/ansi/constant";
 
+type TerminalWrap = "word" | "char";
+
 type Config = {
+    wrap?: TerminalWrap | "off";
     cursor?: {
         limit?: number;
     };
 };
 
-const TERMINAL_CURSOR_NO_LIMIT = -1;
-const TERMINAL_CURSOR_MAX = 120;
+const TERMINAL_CURSOR_LIMIT = 120;
 
 class Terminal implements Target {
-    private wrap: "word" | "char" = "word";
+    private wrap: TerminalWrap = "word";
     private cursor = {
         current: 0,
-        limit: TERMINAL_CURSOR_MAX,
+        limit: TERMINAL_CURSOR_LIMIT,
     };
+
+    private shouldWrap: boolean = true;
 
     constructor(config?: Config) {
         if (config?.cursor?.limit === 0) {
             throw new Error("Invalid terminal cursor max width");
         }
 
+        if (config?.wrap == "off") {
+            this.shouldWrap = false;
+            return;
+        }
+
         this.cursor.limit = config?.cursor?.limit ?? this.cursor.limit;
+        this.wrap = config?.wrap ?? this.wrap;
+    }
+
+    wrapOn() {
+        this.shouldWrap = true;
+    }
+    wrapOff() {
+        this.shouldWrap = false;
+    }
+
+    setWrapMode(mode: TerminalWrap) {
+        this.wrap = mode;
+    }
+    setCursorLimit(limit: number) {
+        this.cursor.limit = limit;
     }
 
     newLine(): void {
@@ -37,10 +61,17 @@ class Terminal implements Target {
     }
 
     write(data: string): void {
-        if (this.wrap === "word") {
-            this.writeByWord(data);
-        } else {
-            this.writeByChar(data);
+        switch (this.wrap) {
+            case "word": {
+                this.writeByWord(data);
+                break;
+            }
+            case "char": {
+                this.writeByChar(data);
+                break;
+            }
+            default:
+                break;
         }
     }
 
@@ -50,28 +81,31 @@ class Terminal implements Target {
 
         while (index < length) {
             let nextSpace = data.indexOf(" ", index);
-            if (nextSpace === -1) nextSpace = length;
+
+            if (nextSpace === -1) {
+                nextSpace = length;
+            }
 
             const word = data.slice(index, nextSpace);
-            const wordLength = word.length;
             const remainingSpace = this.cursor.limit - this.cursor.current;
 
-            if (
-                this.cursor.limit > TERMINAL_CURSOR_NO_LIMIT &&
-                wordLength > remainingSpace
-            ) {
+            if (this.shouldWrap && word.length > remainingSpace) {
                 this.newLine();
             }
 
+            /**
+             * If the word length is still greater than the cursor limit just
+             * print it. This would mean that the cursor limit is small.
+             */
             process.stdout.write(word);
-            this.cursor.current += wordLength;
+            this.cursor.current += word.length;
 
             if (nextSpace < length) {
                 process.stdout.write(" ");
                 this.cursor.current += 1;
             }
 
-            if (this.cursor.current >= this.cursor.limit) {
+            if (this.shouldWrap && this.cursor.current >= this.cursor.limit) {
                 this.newLine();
             }
 
@@ -82,10 +116,11 @@ class Terminal implements Target {
     private writeByChar(data: string): void {
         for (let i = 0; i < data.length; i++) {
             const char = data[i];
+
             process.stdout.write(char);
             this.cursor.current += 1;
 
-            if (this.cursor.current >= this.cursor.limit) {
+            if (this.shouldWrap && this.cursor.current >= this.cursor.limit) {
                 this.newLine();
             }
         }
