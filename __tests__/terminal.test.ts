@@ -6,10 +6,12 @@ const MESSAGE =
 const terminal = new Terminal({ wrap: "word", cursor: { limit: 60 } });
 
 terminal.write(MESSAGE);
+
 terminal.setWrapMode("char");
 terminal.newLine();
 terminal.newLine();
 terminal.write(MESSAGE);
+
 terminal.wrapOff();
 terminal.newLine();
 terminal.newLine();

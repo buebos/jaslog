@@ -80,6 +80,7 @@ class Terminal implements Target {
         const length = data.length;
 
         while (index < length) {
+            const remainingSpace = this.cursor.limit - this.cursor.current;
             let nextSpace = data.indexOf(" ", index);
 
             if (nextSpace === -1) {
@@ -87,10 +88,12 @@ class Terminal implements Target {
             }
 
             const word = data.slice(index, nextSpace);
-            const remainingSpace = this.cursor.limit - this.cursor.current;
 
             if (this.shouldWrap && word.length > remainingSpace) {
                 this.newLine();
+            } else if (index > 0) {
+                process.stdout.write(" ");
+                this.cursor.current += 1;
             }
 
             /**
@@ -100,15 +103,6 @@ class Terminal implements Target {
             process.stdout.write(word);
             this.cursor.current += word.length;
 
-            if (nextSpace < length) {
-                process.stdout.write(" ");
-                this.cursor.current += 1;
-            }
-
-            if (this.shouldWrap && this.cursor.current >= this.cursor.limit) {
-                this.newLine();
-            }
-
             index = nextSpace + 1;
         }
     }
@@ -117,12 +111,16 @@ class Terminal implements Target {
         for (let i = 0; i < data.length; i++) {
             const char = data[i];
 
-            process.stdout.write(char);
-            this.cursor.current += 1;
-
             if (this.shouldWrap && this.cursor.current >= this.cursor.limit) {
                 this.newLine();
+
+                if (char === " ") {
+                    continue;
+                }
             }
+
+            process.stdout.write(char);
+            this.cursor.current += 1;
         }
     }
 
